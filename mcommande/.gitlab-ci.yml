@@ -1,0 +1,17 @@
+image: docker:latest
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+  - package
+  - publish
+
+docker-build:
+  stage: build
+  before_script :
+    - docker login -u blamyae -p $DOCKER_HUB_PASSWORD
+  script:
+    - docker build -t blamyae/mcommande:1.0.0 -f Dockerfile_mcommande .
+    - docker push blamyae/mcommande:1.0.0

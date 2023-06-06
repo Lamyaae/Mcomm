@@ -1,0 +1,18 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+  - package
+  - publish
+
+docker-build:
+  stage: build
+  before_script :
+    - docker login -u blamyae -p $DOCKER_HUB_PASSWORD
+  script:
+    - docker build -t blamyae/mfront:1.0.0 -f Dockerfile_mfront .
+    - docker push blamyae/mfront:1.0.0

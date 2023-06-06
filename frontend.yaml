@@ -1,48 +1,32 @@
 apiVersion: v1
 kind: Service
 metadata:
-    name: mfront
+  name: mfront-service
 spec:
-    ports:
-        - port: 50
-    selector:
-        app: frontend
+  ports:
+    - port: 50
+      targetPort: 8520
+  selector:
+    app: mfront
+
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: frontend-deployment
+  name: mfront-deployment
 spec:
-    replicas: 2
-    selector:
-        matchLabels:
-            app: frontend
-    template:
-        metadata:
-            labels:
-                app: frontend
-        spec:
-            containers:
-            - name: frontend
-                image: blamyae/mfront:1.0.0
-                ports:
-                - containerPort: 80
-                    name: http-port
-                livenessProbe:
-                    httpGet:
-                        path: /index.html
-                        port: http-port
-                    failureThreshold: 1
-                    periodSeconds: 10
-                startupProbe:
-                    httpGet:
-                        path: /index.html
-                        port: http-port
-                    failureThreshold: 30
-                    periodSeconds: 10
-                readinessProbe:
-                    httpGet:
-                        path: /index.html
-                        port: http-port
-                    failureThreshold: 1
-                    periodSeconds: 10
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mfront
+  template:
+    metadata:
+      labels:
+        app: mfront
+    spec:
+      containers:
+        - name: mfront-container
+          image: blamyae/mfront:1.0.0
+          ports:
+            - containerPort: 8520
